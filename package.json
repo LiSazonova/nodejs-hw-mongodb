@@ -1,0 +1,19 @@
+{
+  "name": "nodejs-hw-mongodb",
+  "version": "1.0.0",
+  "description": "node-js",
+  "type":"module",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "eslint src/**/*.js",
+    "start": "node ./src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": [],
+  "author": "Lili Sazonova <lilissazonova@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^9.9.1",
+    "nodemon": "^3.1.4"
+  }
+}
