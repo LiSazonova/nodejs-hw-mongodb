@@ -1,5 +1,3 @@
-import createHttpError from "http-errors";
-
 export const validateBody = (schema) => async (req, res, next) => {
     try {
         await schema.validateAsync(req.body, {
@@ -7,10 +5,11 @@ export const validateBody = (schema) => async (req, res, next) => {
         });
         next();
     } catch (err) {
-        const errorDetails = err.details.map(detail => detail.message);
-        const error = createHttpError(400, 'Validation Error', {
-            errors: errorDetails,
+        const validationErrors = err.details.map(detail => detail.message);
+        res.status(400).json({
+            status: 400,
+            message: "Validation Error",
+            errors: validationErrors
         });
-        next(error);
     }
 };
