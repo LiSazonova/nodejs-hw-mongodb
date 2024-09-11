@@ -12,4 +12,6 @@ router.post('/login', validateBody(loginUserSchema), ctrlWrapper(loginUserContro
 
 router.post('/refresh', ctrlWrapper(refreshUserSessionController));
 
+router.post('/logout', ctrlWrapper(loginUserController));
+
 export default router;
