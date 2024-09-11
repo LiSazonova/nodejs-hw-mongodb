@@ -16,3 +16,8 @@ export const registerUserSchema = Joi.object({
         'string.empty': 'The "password" field cannot be empty.'
     })
 });
+
+export const loginUserSchema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required()
+});
