@@ -16,6 +16,7 @@ export const getContactsController = async (req, res, next) => {
             sortBy,
             sortOrder,
             filter,
+            userId: req.user._id
         });
 
         res.json({
@@ -30,7 +31,7 @@ export const getContactsController = async (req, res, next) => {
 
 export const getContactByIdController = async (req, res, next) => {
     const { contactId } = req.params;
-    const contact = await getContactById(contactId);
+    const contact = await getContactById(contactId, req.user._id);
 
     if (!contact) {
         throw createHttpError(404, "Contact not found");
@@ -50,7 +51,7 @@ export const createContactController = async (req, res, next) => {
             throw createHttpError(400, "Missing required fields: name, phoneNumber, and contactType are required");
         }
 
-        const contact = await createContact({ name, phoneNumber, email, isFavourite, contactType });
+        const contact = await createContact({ name, phoneNumber, email, isFavourite, contactType, userId: req.user._id });
 
         res.status(201).json({
             status: 201,
@@ -64,7 +65,7 @@ export const createContactController = async (req, res, next) => {
 
 export const patchContactController = async (req, res, next) => {
     const { contactId } = req.params;
-    const updatedContact = await updateContact(contactId, req.body);
+    const updatedContact = await updateContact(contactId, req.user._id, req.body);
 
     if (!updatedContact) {
         next(createHttpError(404, 'Contact not found'));
@@ -80,7 +81,7 @@ export const patchContactController = async (req, res, next) => {
 export const deleteContactController = async (req, res, next) => {
     const { contactId } = req.params;
 
-    const contact = await deleteContact(contactId);
+    const contact = await deleteContact(contactId, req.user._id);
 
     if (!contact) {
         next(createHttpError(404, 'Contact not found'));
