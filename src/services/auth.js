@@ -120,8 +120,7 @@ export const requestResetToken = async (email) => {
     const template = handlebars.compile(templateSource);
     const html = template({
         name: user.name,
-        link: `http://localhost:3000/auth/reset-password?token=${resetToken}`,
-        // link: `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+        link: `${env('APP_DOMAIN')}/auth/reset-password?token=${resetToken}`,
     });
 
     await sendMail({
@@ -130,4 +129,33 @@ export const requestResetToken = async (email) => {
         subject: 'Reset your password',
         html,
     });
+};
+
+export const resetPassword = async (payload) => {
+    let entries;
+
+    try {
+        entries = jwt.verify(payload.token, env('JWT_SECRET'));
+    } catch (err) {
+        if (err instanceof Error) throw createHttpError(401, 'Token is expired or invalid.');
+        throw err;
+    }
+
+    const user = await UsersCollection.findOne({
+        email: entries.email,
+        _id: entries.sub,
+    });
+
+    if (!user) {
+        throw createHttpError(404, 'User not found');
+    }
+
+    const encryptedPassword = await bcrypt.hash(payload.password, 10);
+
+    await UsersCollection.updateOne(
+        { _id: user._id },
+        { $set: { password: encryptedPassword } }
+    );
+
+    await SessionsCollection.deleteOne({ userId: user._id });
 };
