@@ -3,6 +3,7 @@ import createHttpError from 'http-errors';
 import { parsePaginationParams } from "../utils/parsePaginationParams.js";
 import { parseSortParams } from "../utils/parseSortParams.js";
 import { parseFilterParams } from "../utils/parseFilterParams.js";
+import { saveFileToUploadDir } from "../utils/saveFileToUploadDir.js";
 export const getContactsController = async (req, res, next) => {
     const { page, perPage } = parsePaginationParams(req.query);
     const { sortBy, sortOrder } = parseSortParams(req.query);
@@ -65,19 +66,37 @@ export const createContactController = async (req, res, next) => {
 
 export const patchContactController = async (req, res, next) => {
     const { contactId } = req.params;
-    const updatedContact = await updateContact(contactId, req.user._id, req.body);
+    const photo = req.file;
 
-    if (!updatedContact) {
-        next(createHttpError(404, 'Contact not found'));
-        return;
+    let photoUrl;
+
+    if (photo) {
+        photoUrl = await saveFileToUploadDir(photo);
     }
 
-    res.json({
-        status: 200,
-        message: `Successfully patched a contact!`,
-        data: updatedContact,
-    });
+    const updatedContact = {
+        ...req.body,
+        ...(photoUrl && { photo: photoUrl }),
+    };
+
+    try {
+        const result = await updateContact(contactId, req.user._id, updatedContact);
+
+        if (!result) {
+            next(createHttpError(404, 'Contact not found'));
+            return;
+        }
+
+        res.json({
+            status: 200,
+            message: `Successfully patched a contact!`,
+            data: result,
+        });
+    } catch (err) {
+        next(err);
+    }
 };
+
 export const deleteContactController = async (req, res, next) => {
     const { contactId } = req.params;
 
