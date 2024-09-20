@@ -54,7 +54,26 @@ export const createContactController = async (req, res, next) => {
             throw createHttpError(400, "Missing required fields: name, phoneNumber, and contactType are required");
         }
 
-        const contact = await createContact({ name, phoneNumber, email, isFavourite, contactType, userId: req.user._id });
+        const photo = req.file;
+        let photoUrl;
+
+        if (photo) {
+            if (env('ENABLE_CLOUDINARY') === 'true') {
+                photoUrl = await saveFileToCloudinary(photo);
+            } else {
+                photoUrl = await saveFileToUploadDir(photo);
+            }
+        }
+
+        const contact = await createContact({
+            name,
+            phoneNumber,
+            email,
+            isFavourite,
+            contactType,
+            photo: photoUrl,
+            userId: req.user._id
+        });
 
         res.status(201).json({
             status: 201,
