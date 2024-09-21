@@ -1,0 +1,12 @@
+tags:
+  - Auth
+summary: User logout
+operationId: logoutContact
+description: 'Invalidate the user JWT token'
+security:
+  - bearerAuth: []
+responses:
+  '204':
+    description: 'Successfully logged out. The JWT token has been invalidated.'
+  '401':
+    $ref: '../../../components/responses/401.yaml'
