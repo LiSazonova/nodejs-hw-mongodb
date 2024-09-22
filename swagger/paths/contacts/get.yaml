@@ -30,6 +30,7 @@ parameters:
         - name
         - email
         - phone
+      example: name
 responses:
   '200':
     description: Successfully found contacts!
