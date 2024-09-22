@@ -14,7 +14,6 @@ requestBody:
           - name
           - phoneNumber
           - contactType
-          - email
         properties:
           name:
             description: "Contact's name"
@@ -31,9 +30,9 @@ requestBody:
           email:
             description: "Contact's email"
             type: string
-            example: 'lilissazonova@gmail.com'
+            example: 'example@mail.com'
           isFavourite:
-            description: "Contact's fovourite status"
+            description: "Contact's favourite status"
             type: boolean
             example: true
           photo:
