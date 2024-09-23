@@ -247,8 +247,7 @@
                 "required": [
                   "name",
                   "phoneNumber",
-                  "contactType",
-                  "email"
+                  "contactType"
                 ],
                 "properties": {
                   "name": {
@@ -273,10 +272,10 @@
                   "email": {
                     "description": "Contact's email",
                     "type": "string",
-                    "example": "lilissazonova@gmail.com"
+                    "example": "example@mail.com"
                   },
                   "isFavourite": {
-                    "description": "Contact's fovourite status",
+                    "description": "Contact's favourite status",
                     "type": "boolean",
                     "example": true
                   },
@@ -364,6 +363,19 @@
                 "desc"
               ],
               "example": "asc"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "name",
+                "email",
+                "phone"
+              ],
+              "example": "name"
             }
           }
         ],
